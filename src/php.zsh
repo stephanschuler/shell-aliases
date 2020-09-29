@@ -11,6 +11,11 @@ function _switch_bast_matching_php_version() {
     local filename="$2"
     local aliasname
 
+    if [ "$versionNumber" = "" ] ;
+    then
+        return 1
+    fi
+
     aliasname=`echo php$versionNumber | awk -F. '{ print $1$2}'`
 
     checkIfAliasExists=`which $aliasname`
@@ -55,7 +60,7 @@ function _check_directory_for_php_version() {
 
     if [[ -f "$searchPath/$comnposerFile" ]];
     then
-        local phpVersion=`jshon -e require -e php < $searchPath/$comnposerFile | sed -E "s/^\"[~>]?([0-9])\.([0-9]+)\"$/\\1.\\2/g"`
+        local phpVersion=`jshon -Q -e require -e php -u < $searchPath/$comnposerFile | sed -E "s/^[~>]?([0-9])\.([0-9]+)$/\\1.\\2/g"`
         _switch_bast_matching_php_version "$phpVersion" "$searchPath/$comnposerFile" && return
     fi
 
