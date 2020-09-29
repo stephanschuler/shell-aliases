@@ -6,7 +6,7 @@
 autoload throw catch
 
 
-function _switch_bast_matching_php_version() {
+function _switch_best_matching_php_version() {
     local versionNumber="$1"
     local filename="$2"
     local aliasname
@@ -49,19 +49,19 @@ function _check_directory_for_php_version() {
     if [[ -f "$searchPath/$versionFile" ]];
     then
         local phpVersion=`cat "$searchPath/$versionFile"`
-        _switch_bast_matching_php_version "$phpVersion" "$searchPath/$versionFile" && return
+        _switch_best_matching_php_version "$phpVersion" "$searchPath/$versionFile" && return
     fi
 
     if [[ -f "$searchPath/$vagrantFile" ]];
     then
         local phpVersion=`grep php $searchPath/$vagrantFile | sed -E "s/.*[\'\"](.*)[\'\"].*/\\1/g"`
-        _switch_bast_matching_php_version "$phpVersion" "$searchPath/$vagrantFile" && return
+        _switch_best_matching_php_version "$phpVersion" "$searchPath/$vagrantFile" && return
     fi
 
     if [[ -f "$searchPath/$comnposerFile" ]];
     then
         local phpVersion=`jshon -Q -e require -e php -u < $searchPath/$comnposerFile | sed -E "s/^[~>]?([0-9])\.([0-9]+)$/\\1.\\2/g"`
-        _switch_bast_matching_php_version "$phpVersion" "$searchPath/$comnposerFile" && return
+        _switch_best_matching_php_version "$phpVersion" "$searchPath/$comnposerFile" && return
     fi
 
     _check_directory_for_php_version `dirname $searchPath`
