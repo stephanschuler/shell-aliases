@@ -39,6 +39,7 @@ function _check_directory_for_php_version() {
 
     local versionFile=".phprc"
     local vagrantFile="Vagrantfile"
+    local comnposerFile="composer.json"
 
     if [[ -f "$searchPath/$versionFile" ]];
     then
@@ -50,6 +51,12 @@ function _check_directory_for_php_version() {
     then
         local phpVersion=`grep php $searchPath/$vagrantFile | sed -E "s/.*[\'\"](.*)[\'\"].*/\\1/g"`
         _switch_bast_matching_php_version "$phpVersion" "$searchPath/$vagrantFile" && return
+    fi
+
+    if [[ -f "$searchPath/$comnposerFile" ]];
+    then
+        local phpVersion=`jshon -e require -e php < $searchPath/$comnposerFile | sed -E "s/^\"[~>]?([0-9])\.([0-9]+)\"$/\\1.\\2/g"`
+        _switch_bast_matching_php_version "$phpVersion" "$searchPath/$comnposerFile" && return
     fi
 
     _check_directory_for_php_version `dirname $searchPath`
