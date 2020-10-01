@@ -29,7 +29,26 @@ function _switch_best_matching_php_version() {
         return 1
     fi
 
-    alias php=$aliasname
+    local realAliasPath=`type -f $aliasname | awk '{ print $6 }'`
+    if [ "$realAliasPath" = "" ];
+    then
+        >&2 echo -en "\033[31m"
+        >&2 echo "Requested PHP version $versionNumber in \"$filename\" is not available as an alias."
+        >&2 echo -en "\033[0m"
+        return 1
+    fi
+
+    local newPath
+    echo $PATH | tr ':' "\n" | while IFS=: read -r pathOption ;
+    do
+        if [ ! `echo $pathOption | grep 'Cellar/php'` ];
+        then
+            newPath="$newPath:$pathOption"
+        fi
+    done
+
+    PATH=`dirname $realAliasPath`$newPath
+
     return 0
 }
 
