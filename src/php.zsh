@@ -79,7 +79,7 @@ function _check_directory_for_php_version() {
 
     if [[ -f "$searchPath/$comnposerFile" ]];
     then
-        local phpVersion=`jshon -Q -e require -e php -u < $searchPath/$comnposerFile | sed -E "s/^[~>]?([0-9])\.([0-9]+)$/\\1.\\2/g"`
+        local phpVersion=`jshon -Q -e require -e php -u < $searchPath/$comnposerFile | sed -E "s/^[~>^]?([0-9])\.([0-9]+)$/\\1.\\2/g"`
         _switch_best_matching_php_version "$phpVersion" "$searchPath/$comnposerFile" && return
     fi
 
