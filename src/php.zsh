@@ -73,7 +73,7 @@ function _check_directory_for_php_version() {
 
     if [[ -f "$searchPath/$vagrantFile" ]];
     then
-        local phpVersion=`grep php $searchPath/$vagrantFile | sed -E "s/.*[\'\"](.*)[\'\"].*/\\1/g"`
+        local phpVersion=`grep -m 1 php $searchPath/$vagrantFile | sed -E "s/.*[\'\"](.*)[\'\"].*/\\1/g"`
         _switch_best_matching_php_version "$phpVersion" "$searchPath/$vagrantFile" && return
     fi
 
