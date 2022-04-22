@@ -11,12 +11,7 @@ function _evalCached() {
 
     if [ ! -d "$cacheDir" ] || [ "$cacheDir" = "" ] ;
     then
-        unset cacheDir
-        >&2 echo -en "\033[31m"
-        >&2 echo "Shell alias cache directroy is gone."
-        >&2 echo "$command"
-        >&2 echo ""
-        >&2 echo -en "\033[0m"
+        mkdir -p $cacheDir
     fi
 
     local cacheIdentifier=`echo $command | md5`
