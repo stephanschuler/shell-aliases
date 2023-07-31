@@ -16,8 +16,13 @@ alias container-bash=_containerBash
 
 
 function _dockerHost() {
-    # https://gist.github.com/BretFisher/5e1a0c7bcca4c735e716abf62afad389
-    # docker run -it --rm --privileged --pid=host justincormack/nsenter1
-    docker run -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i bash
+    docker run -it --rm --privileged --pid=host --name=docker_host ubuntu
 }
 alias docker-host=_dockerHost
+
+function _dockerNsenter() {
+    # https://gist.github.com/BretFisher/5e1a0c7bcca4c735e716abf62afad389
+    # docker run -it --rm --privileged --pid=host justincormack/nsenter1
+    docker run -it --rm --privileged --pid=host --name=docker_nsenter debian nsenter -t 1 -m -u -n -i
+}
+alias docker-nsenter=_dockerNsenter
