@@ -17,7 +17,12 @@ function _evalCached() {
     local cacheIdentifier=`echo $command | md5`
     local cacheFile="$cacheDir/$cacheIdentifier"
 
-    find "$cacheDir" -maxdepth 1 -mtime +1 -delete
+    find "$cacheDir" \
+      -maxdepth 1 \
+      -mindepth 1 \
+      -type f \
+      -mtime +1 \
+      -delete
 
     local result
     if [ ! -f "$cacheFile" ] ;
