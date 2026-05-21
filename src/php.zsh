@@ -112,7 +112,7 @@ function() {
     echo $versionNumbers | while IFS= read -r versionNumber ;
     do
         function() {
-            local executable=`eval-cached "brew info php@$versionNumber | grep -E -o '$brewPrefix/Cellar/[^[:space:]]+' | awk '{ print \\$0 \"/bin/php\" }'"`
+            local executable="$brewPrefix/opt/php@$versionNumber/bin/php"
             local aliasname=`echo php$versionNumber | awk -F. '{ print $1$2}'`
             if [[ -x "$executable" ]]
             then
