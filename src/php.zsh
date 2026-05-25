@@ -26,7 +26,12 @@ function _switch_best_matching_php_version() {
         >&2 echo -en "\033[31m"
         >&2 echo "Requested PHP version $versionNumber in \"$filename\" is not installed."
         >&2 echo -en "\033[0m"
-        return 1
+        if [ -z "$INTELLIJ_ENVIRONMENT_READER" ];
+        then
+            return 1
+        else
+            return 0
+        fi
     fi
 
     local realAliasPath=`type -f $aliasname | awk '{ print $6 }'`
@@ -35,7 +40,12 @@ function _switch_best_matching_php_version() {
         >&2 echo -en "\033[31m"
         >&2 echo "Requested PHP version $versionNumber in \"$filename\" is not available as an alias."
         >&2 echo -en "\033[0m"
-        return 1
+        if [ -z "$INTELLIJ_ENVIRONMENT_READER" ];
+        then
+            return 1
+        else
+            return 0
+        fi
     fi
 
     local newPath
@@ -69,6 +79,9 @@ function _check_directory_for_php_version() {
     then
         local phpVersion=`cat "$searchPath/$versionFile"`
         _switch_best_matching_php_version "$phpVersion" "$searchPath/$versionFile" && return
+
+        local phpVersion=`jshon -Q -e config -e platform -e php -u < $searchPath/$comnposerFile | sed -E "s/^[~>^]?([0-9])\.([0-9]+)$/\\1.\\2/g"`
+        _switch_best_matching_php_version "$phpVersion" "$searchPath/$comnposerFile" && return
     fi
 
     if [[ -f "$searchPath/$vagrantFile" ]];
@@ -101,7 +114,10 @@ function() {
         function() {
             local executable=`eval-cached "brew info php@$versionNumber | grep -E -o '$brewPrefix/Cellar/[^[:space:]]+' | awk '{ print \\$0 \"/bin/php\" }'"`
             local aliasname=`echo php$versionNumber | awk -F. '{ print $1$2}'`
-            alias $aliasname=$executable
+            if [[ -x "$executable" ]]
+            then
+                alias $aliasname=$executable
+            fi
         }
     done
 
